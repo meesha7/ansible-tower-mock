@@ -1,5 +1,6 @@
 """Mock calling ansible-tower job templates."""
 import os
+import time
 from pprint import pprint
 from subprocess import Popen
 
@@ -31,7 +32,13 @@ def run_template(job_template_id):
         else:
             extra_vars.append(f"{k}={v}")
 
-    args = ["ansible-playbook", os.getenv("MOCK_PLAYBOOK"), "-vvv", *extra_vars, "--diff"]
+    args = [
+        "ansible-playbook",
+        os.getenv("MOCK_PLAYBOOK"),
+        "-vvv",
+        *extra_vars,
+        "--diff",
+    ]
 
     if survey_vars["job_type"] == "check":
         args.append("--check")
@@ -45,7 +52,7 @@ def run_template(job_template_id):
     else:
         status_code = 200
 
-    return job_template_id, status_code
+    return {"id": int(time.time())}, status_code
 
 
 if __name__ == "__main__":
