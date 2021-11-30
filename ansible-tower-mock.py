@@ -1,4 +1,5 @@
 """Mock calling ansible-tower job templates."""
+import json
 import os
 import time
 from pprint import pprint
@@ -53,6 +54,21 @@ def run_template(job_template_id):
         status_code = 200
 
     return {"id": int(time.time())}, status_code
+
+
+@app.route("/api/v2/jobs/<job_id>/", methods=["GET"])
+def get_job(job_id):
+    return {
+        "job_id": job_id,
+        "status": "successful",
+        "extra_vars": json.dumps({"task": "some-task"}),
+        "stdout": "Hello, World!",
+    }
+
+
+@app.route("/api/v2/jobs/<job_id>/stdout/", methods=["GET"])
+def get_stdout(job_id):
+    return "Hello, World!"
 
 
 if __name__ == "__main__":
